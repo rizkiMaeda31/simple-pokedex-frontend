@@ -5,12 +5,13 @@ import { NewForm } from '../../components/form'
 import { process_json } from '../../components/components'
 import * as RB from 'react-bootstrap'
 import { useState } from 'react'
+// import keyIndex from 'react-key-index'
 
 export default function insert(props){
     const router = useRouter()
     const [tab, setTab]=useState("pokemon")
 	// var props =JSON.parse(router.query.property)
-
+    // console.log(props.data)
     return(
         <div className={styles.container}>
             <Head>
@@ -42,8 +43,7 @@ export default function insert(props){
                         <Ability />
                     </RB.Tab>
                     <RB.Tab eventKey="detail" title="Pokemon Detail">
-                        <Detail />
-                        {/* <NewForm /> */}
+                        <Detail names={props.data.names} types={props.data.types} abilities={props.data.abilities}/>
                     </RB.Tab>
                 </RB.Tabs>
                 
@@ -52,7 +52,7 @@ export default function insert(props){
     )
 }
 
-export const Pokemon=props=>{
+export const Pokemon=()=>{
     const [data, setData]=useState({
         name:'',
         img:'',
@@ -84,7 +84,7 @@ export const Pokemon=props=>{
                 <RB.Form.Label>Pokemon Name</RB.Form.Label>
                 <RB.Form.Control type="text"
                 defaultValue={data.name}
-                name="name"
+                name="name" required
                 placeholder="New Pokemon Name"></RB.Form.Control>
             </RB.Form.Group>
 
@@ -100,19 +100,19 @@ export const Pokemon=props=>{
             <RB.Row className="mb-3">
                 <RB.Form.Group as={RB.Col} controlId="form_hp">
                     <RB.Form.Label>HP</RB.Form.Label>
-                    <RB.Form.Control type="number" defaultValue={data.hp} name="hp" min={0}
+                    <RB.Form.Control type="number" required defaultValue={data.hp} name="hp" min={0}
                 placeholder="HP"/>
                 </RB.Form.Group>
 
                 <RB.Form.Group as={RB.Col} controlId="form_atk">
                     <RB.Form.Label>Attack</RB.Form.Label>
-                    <RB.Form.Control type="number" defaultValue={data.atk} name="atk" min={0}
+                    <RB.Form.Control type="number" required defaultValue={data.atk} name="atk" min={0}
                 placeholder="Attack"/>
                 </RB.Form.Group>
 
                 <RB.Form.Group as={RB.Col} controlId="form_def">
                     <RB.Form.Label>Defense</RB.Form.Label>
-                    <RB.Form.Control type="number" defaultValue={data.def} name="def" min={0}
+                    <RB.Form.Control type="number" required defaultValue={data.def} name="def" min={0}
                 placeholder="Defense" />
                 </RB.Form.Group>
             </RB.Row>
@@ -120,19 +120,19 @@ export const Pokemon=props=>{
             <RB.Row className="mb-3">
                 <RB.Form.Group as={RB.Col} controlId="form_satk">
                     <RB.Form.Label>Special Attack</RB.Form.Label>
-                    <RB.Form.Control type="number" defaultValue={data.satk} name="satk" min={0}
+                    <RB.Form.Control type="number" required defaultValue={data.satk} name="satk" min={0}
                 placeholder="Special Attack" />
                 </RB.Form.Group>
 
                 <RB.Form.Group as={RB.Col} controlId="form_sdef">
                     <RB.Form.Label>Special Defense</RB.Form.Label>
-                    <RB.Form.Control type="number" defaultValue={data.sdef} name="sdef" min={0}
+                    <RB.Form.Control type="number" required defaultValue={data.sdef} name="sdef" min={0}
                 placeholder="Special Defense" />
                 </RB.Form.Group>
 
                 <RB.Form.Group as={RB.Col} controlId="form_speed">
                     <RB.Form.Label>Speed</RB.Form.Label>
-                    <RB.Form.Control type="number" defaultValue={data.speed} name="speed" min={0}
+                    <RB.Form.Control type="number" required defaultValue={data.speed} name="speed" min={0}
                 placeholder="Speed" />
                 </RB.Form.Group>
             </RB.Row>
@@ -149,7 +149,7 @@ export const Pokemon=props=>{
     )
 }
 
-export const Type=props=>{
+export const Type=()=>{
     const [name, setName]=useState('')
     const handleSubmit=e=>{
         e.preventDefault()
@@ -165,7 +165,7 @@ export const Type=props=>{
                 <RB.Form.Label>Type</RB.Form.Label>
                 <RB.Form.Control type="text"
                 defaultValue={name}
-                name="name"
+                name="name" required
                 placeholder="Example fire, water or grass"></RB.Form.Control>
             </RB.Form.Group>
 
@@ -180,16 +180,17 @@ export const Type=props=>{
         </RB.Form>
     )
 }
-export const Ability=props=>{
+export const Ability=()=>{
     const [data, setData]=useState({
         name:'',
         flavor_text:''
     })
     const handleSubmit=e=>{
         e.preventDefault()
+        
         var temp={
             name:e.target[0].value,
-            flavor_text:e.target[1].value,
+            flavor_text:e.target[1].value?'-':e.target[1].value,
         }
         console.log(temp)
     }
@@ -199,7 +200,7 @@ export const Ability=props=>{
             <RB.Form.Group className="mb-3" controlId="form_ability">
                 <RB.Form.Label>Ability</RB.Form.Label>
                 <RB.Form.Control type="text"
-                defaultValue={data.name} placeholder='New Ability Name'
+                defaultValue={data.name} placeholder='New Ability Name' required
                 name="name"></RB.Form.Control>
             </RB.Form.Group>
             <RB.Form.Group className="mb-3" controlId="form_flavortext">
@@ -222,26 +223,134 @@ export const Ability=props=>{
 }
 
 export const Detail=props=>{
+    // console.log("detail",props.data.names)
     const [data, setData]=useState({
-        name:'',
-        type:[],
-        aiblity:[]
+        newdata:{
+            pokemonID:1,
+            type:[1,props.types.length],
+            ability:[0,0,0]
+        },
+        db:{
+            flavor_text:[
+                "","",""
+            ],
+            names:props.names,
+            types:[props.types.slice(0,props.types.length-1),props.types],
+            abilities:props.abilities
+        }
     })
     const handleSubmit=e=>{
         e.preventDefault()
         var temp={
             name:e.target[0].value
         }
-        console.log(temp)
+        // if(data.newdata.type[0]==data.newdata.type[1]) return (<>window.alert('pokemon type should different each other or only one')</>)
+        console.log(data.newdata)
     }
+
+    const handleChange=(e)=>{
+        const {name, value}=e.target
+        // setState
+        
+        if(name == "abilities1" || name == "abilities2" || name == "abilities3"){
+            // alert(e.target.name + " - " + e.target.value)
+            var temp=data.newdata.ability
+            var temp1=data.db.flavor_text
+            if(name == "abilities1") {
+                // e.target.name="f1"
+                temp[0]=value
+                temp1[0]=data.db.abilities[value-1].flavor_text
+            }
+            if(name == "abilities2") {
+                // e.target.name="f2"
+                temp[1]=value
+                temp1[1]=data.db.abilities[value-1].flavor_text
+            }
+            if(name == "abilities3") {
+                // e.target.name="f3"
+                temp[2]=value
+                temp1[2]=data.db.abilities[value-1].flavor_text
+            }
+            // console.log(e)
+            setData(prev => ({...prev,
+                db:{...prev.db,
+                    ['flavor_text']:temp1
+                },
+                newdata:{...prev.newdata,
+                    ['ability']:temp
+                }
+            }))
+        }
+    }
+
+    const handleReset=(e)=>{
+        setData(prev=>({...prev,
+            db:{
+                ...prev.db,flavor_text:["","",""]
+            },
+            newdata:{
+                pokemonID:1,
+                type:[1,props.types.length],
+                ability:[0,0,0]
+            }
+        }))
+    }
+    // const example =[keyIndex(data.db.abilities,1),keyIndex(data.db.abilities,2),keyIndex(data.db.abilities,3)]
+    // console.log("newdata", example[0])
+    // console.log(example[0][0]._idId)
     return(
-        <RB.Form onSubmit={null} onReset={null}>
-            <RB.Form.Group className="mb-3" controlId="form_ability">
-                <RB.Form.Label>Ability</RB.Form.Label>
-                <RB.Form.Control type="text"
-                defaultValue={data.name} placeholder='New Ability Name'
-                name="name"></RB.Form.Control>
+        <RB.Form onSubmit={handleSubmit} onReset={handleReset}>
+            <RB.Form.Group className="mb-3" controlId="form_pokemonname">
+                <RB.Form.Label>Pokemon Name</RB.Form.Label>
+                <RB.Form.Select value={data.newdata.pokemonID} 
+                onChange={(e) => setData(prev=>({...prev,newdata:{...prev.newdata,pokemonID : e.target.value}}))} name="pokemonID">
+                    {data.db.names.map((a)=> <option value={a.id} key={a.id + "-" + a.name}>{a.name}</option> )}
+                </RB.Form.Select>
             </RB.Form.Group>
+
+            <RB.Row className="mb-3">
+                <RB.Form.Group as={RB.Col} controlId="form_type1">
+                    <RB.Form.Label>Type 1</RB.Form.Label>
+                    <RB.Form.Select value={data.newdata.type[0]} 
+                    onChange={(e) => setData(prev=>({...prev,newdata:{...prev.newdata,type : [e.target.value, data.newdata.type[1]]}}))} name="type1" >
+                        {data.db.types[0].map((a)=> <option value={a.id} key={a.id + "-" + a.name}>{a.name}</option> )}
+                    </RB.Form.Select>
+                </RB.Form.Group>
+
+                <RB.Form.Group as={RB.Col} controlId="form_type2">
+                    <RB.Form.Label>Type 2</RB.Form.Label>
+                    <RB.Form.Select value={data.newdata.type[1]} 
+                    onChange={(e) => setData(prev=>({...prev,newdata:{...prev.newdata,type : [data.newdata.type[0], e.target.value]}}))} name="type2" >
+                        {data.db.types[1].map((a)=> <option value={a.id} key={a.id + "-" + a.name}>{a.name}</option> )}
+                        
+                    </RB.Form.Select>
+                </RB.Form.Group>
+            </RB.Row>
+
+            <RB.Row className="mb-3">
+                
+                {
+                    [...Array(3)].map((e, i) => (
+                        <RB.Form.Group as={RB.Col} controlId={"a"+i}>
+                            <RB.Form.Label>Ability {i+1}</RB.Form.Label>
+                            
+                            <RB.Form.Select 
+                                        value={data.newdata.ability[i]}
+                                        onChange={handleChange}
+                                        name={"abilities"+(i + 1)}
+                                        
+                                    >
+                                
+                                {data.db.abilities.map((a)=> <option value={a.id} key={a.id}>{a.name}</option> )}
+                                <option value={0}>-</option>
+                                
+                            </RB.Form.Select>
+                            <RB.Form.Label >{data.db.flavor_text[i]}</RB.Form.Label>
+                        </RB.Form.Group>
+                    ))
+                }
+                
+            </RB.Row>
             <RB.ButtonToolbar aria-label="Toolbar btngroup">
                 <RB.ButtonGroup className="me-2">
                     <RB.Button variant="primary" type="submit" name="submit">Submit</RB.Button>
@@ -260,26 +369,42 @@ export async function getServerSideProps() {
     // const pokemoncount = d.data.attributes.count
     const populate=`populate[0]=detail.types&populate[2]=detail.pokemon_name&populate[3]=detail.pokemon_abilities&pagination[page]=1&pagination[pageSize]=25`
     const filter=`&filters[status][$eq]=true`
-    const res1 = await fetch('http://127.0.0.1:1337/api/c3s?'+populate+filter).catch((err) => console.log(err));
-    let d1 = await res1.json()
-    let arr = process_json(d1.data)
-    let pagination=null
-    try{
-        pagination=d1.meta.pagination
-    }
-    catch(e){
-        console.log("pagination",e)
-    }
+    const base=`http://127.0.0.1:1337/api/`
+    var collection=`c3s`
+    // const res1 = await fetch(base+collection+'?'+populate+filter).catch((err) => console.log(err));
+    // let d1 = await res1.json()
+    // let arr = process_json(d1.data)
+    var results=[]
+    collection=`pokemon-names?pagination[limit]=300`
+    const names=await fetch(base+collection).catch((err)=> console.log("name is failed", err))
+    const res1=await names.json()
+    results.push(res1.data.map((i)=>({
+        id:i.id,
+        name:i.attributes.name
+    })))
+    collection=`types?pagination[limit]=100`
+    const types=await fetch(base+collection).catch((err)=> console.log("name is failed", err))
+    const res2=await types.json()
+    results.push(res2.data.map((i)=>({
+        id:i.id,
+        name:i.attributes.name
+    })))
+    collection=`pokemon-abilities?pagination[limit]=500`
+    const abilities=await fetch(base+collection).catch((err)=> console.log("name is failed", err))
+    const res3=await abilities.json()
+    results.push(res3.data.map((i)=>({
+        id:i.id,
+        name:i.attributes.name,
+        flavor_text:i.attributes.flavor_text
+    })))
+    // console.log(results)
     return {
         props: {
-            // count: pokemoncount||null,
-            // data: arr||null,
-            // pagination: pagination||null,
-            // currentPage:1
-            //count: pokemoncount,
-            //data: null,
-            //pagination: null,
-            //currentPage:1
+            data:{
+                names:results[0],
+                types:results[1],
+                abilities:results[2]
+            }
         }
     }
 }
