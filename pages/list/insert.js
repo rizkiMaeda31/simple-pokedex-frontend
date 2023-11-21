@@ -239,6 +239,9 @@ export const Detail=props=>{
             abilities:props.abilities
         }
     })
+    const alert = <RB.Alert key={'danger'} variant={'danger'}>Failed created new pokemon data!</RB.Alert>
+    const success = <RB.Alert key={'success'} variant={'success'}>Success created new pokemon data!</RB.Alert>
+    
     const handleSubmit=e=>{
         e.preventDefault()
         var temp={

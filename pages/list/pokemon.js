@@ -7,10 +7,12 @@ import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from 
 // import ReactPaginate from "react-paginate";
 import { CustomTabs, process_json } from '../../components/components'
 import { NavBar1 } from '../../components/mynavbar'
+import { Cookies } from 'react-cookie'
 
 export default function list(props) {
-
+    const cookies=new Cookies()
     const data=props.data
+    
     var pageCount=null
     try{
         pageCount=props.pagination.pageCount
@@ -30,13 +32,10 @@ export default function list(props) {
         // { key: "edit", label:"" },{ key: "delete", label:"" }
     ]
 
-    
-    const [user,setUser]=useState({
-        name:null,
-        status:0,
-        token:null
-    })
-    
+    const [userinformation, setUserInformation]=useState('')
+    useEffect(()=>{
+        setUserInformation(<h4>You are a{cookies.get('user')?cookies.get('user').role=='pokemon editor'?' Pokemon Editor':' Pokemon Master':' Pokemon Watcher'}!</h4>)
+    },[])
     //const rows = props.data
 
 
@@ -50,11 +49,12 @@ export default function list(props) {
             <main className={styles.main}>
                 <NavBar1 />
                 <h1 className={styles.title}>
-                        My <a href="/">PokeDex!</a>
-                    </h1>
-                    <CustomTabs initial="1" columns={columns} data={data} pageCount={pageCount} user={user} />
+                    My <a href="/">PokeDex!</a>
+                </h1>
+                {userinformation}
+                <CustomTabs initial="1" columns={columns} data={data} pageCount={pageCount} user={user} />
 
-                    <div className={styles.grid} >
+                <div className={styles.grid} >
 
                         {
                         // loading ? (
