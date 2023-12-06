@@ -1,16 +1,27 @@
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tabs } from '@geist-ui/core'
 import styles from '../styles/Home.module.css'
 import Head from 'next/head'
 import Image from 'next/image'
 import { ViewTable } from './table'
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@nextui-org/table";
+import { Cookies } from 'react-cookie';
 // import { Link } from "react-router-dom";
 
-
+const cookies=new Cookies()
 
 export const PokemonDataDetail = props => {
+    const [role, setRole]=useState('')
+	useEffect(()=>{
+		try {
+			setRole(cookies.get('user').role)
+		} catch (error) {
+			console.log('setrole error', error)
+			setRole('')
+		}
+	},[])
+
     return(
         <>
             {/* {console.log(props.obj)} */}
@@ -39,7 +50,7 @@ export const PokemonDataDetail = props => {
                 </TableBody>
             </Table>
             <br></br>
-            <Table aria-label="pokemon abilities" hidden={props.status == 0? true:false}>
+            <Table aria-label="pokemon abilities" hidden={role == 'pokemon watcher'? true:false}>
                 <TableHeader>
                     <TableColumn>Abilities</TableColumn>
                     <TableColumn></TableColumn>
@@ -98,7 +109,7 @@ export const ClickedCellLink = props => {
             {/* this is Link from nextjs library */}
             <Link href={{
                 pathname: props.path
-                ,query: props.user
+                // ,query: props.user
             }} as={props.alias}>
                 <button>{props.desc}</button>
             </Link>
@@ -122,24 +133,18 @@ export const CustomTabs = props => {
         {label: "nextui-table", value: "1", content:"content1"},
         {label: "old table", value: "2", content:"content2"}
     ]
-    return (
-        <>
-            {props.data?
-                (<Tabs initialValue={props.initial} activeClassName="TabsActive">
+    const tabs=<Tabs initialValue={props.initial} activeClassName="TabsActive">
                     <Tabs.Item label={items[0].label} value={items[0].value} hidden={true}>
                         <ViewTable user={props.user} columns={props.columns} data={props.data} pageCount={props.pageCount}></ViewTable>
                     </Tabs.Item>
-                    <Tabs.Item label={items[1].label} value={items[1].value}>
+                    <Tabs.Item label={items[1].label} value={items[1].value} disabled>
                         no content
                     </Tabs.Item>
-                </Tabs>):
-                (
-                    <>
-                    <h1>Oopss!</h1>
-                    <h2>Strapi is not connected!</h2>
-                    </>
-                )
-                }
+                </Tabs>
+    const error=<><h1>Oopss!</h1><h2>Strapi is not connected!</h2></>
+    return (
+        <>
+            {props.data? (tabs): (error)}
         </>
     )
 }

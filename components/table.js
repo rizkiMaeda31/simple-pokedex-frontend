@@ -131,7 +131,9 @@ export const ViewTable=props=>{
                                         <TableCell>{row.stats.sdef}</TableCell>
                                         <TableCell>{row.stats.speed}</TableCell>
                                         <TableCell>
-                                                <ClickedCellLink path={'/list/[id]'} user={props.user} alias={`/list/${row.id} ` } desc='Detail' />
+                                                <ClickedCellLink path={'/list/[id]'} 
+                                                // user={props.user} 
+                                                alias={`/list/${row.id} ` } desc='Detail' />
                                         </TableCell>
                                     </TableRow>
                                 )}

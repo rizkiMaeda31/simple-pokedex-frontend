@@ -3,10 +3,8 @@ import Image from 'next/image'
 // import Link from 'next/link'
 import styles from '../../styles/Home.module.css'
 import React, { useMemo, useEffect, useState, useCallback } from 'react'
-import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@nextui-org/table";
-// import ReactPaginate from "react-paginate";
 import { CustomTabs, process_json } from '../../components/components'
-import { NavBar1 } from '../../components/mynavbar'
+import { NavBar } from '../../components/mynavbar'
 import { Cookies } from 'react-cookie'
 
 export default function list(props) {
@@ -34,7 +32,12 @@ export default function list(props) {
 
     const [userinformation, setUserInformation]=useState('')
     useEffect(()=>{
-        setUserInformation(<h4>You are a{cookies.get('user')?cookies.get('user').role=='pokemon editor'?' Pokemon Editor':' Pokemon Master':' Pokemon Watcher'}!</h4>)
+        try {
+            setUserInformation(<h4>You are a {cookies.get('user')?cookies.get('user').role:'Guest'}!</h4>)
+        } catch (error) {
+            console.log('setrole error', error)
+        }
+        
     },[])
     //const rows = props.data
 
@@ -47,12 +50,14 @@ export default function list(props) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <main className={styles.main}>
-                <NavBar1 />
+                <NavBar data={['Home ', 'Pokemon ', 'Insert']}/>
                 <h1 className={styles.title}>
                     My <a href="/">PokeDex!</a>
                 </h1>
                 {userinformation}
-                <CustomTabs initial="1" columns={columns} data={data} pageCount={pageCount} user={user} />
+                <CustomTabs initial="1" columns={columns} data={data} pageCount={pageCount} 
+                // user={user}
+                 />
 
                 <div className={styles.grid} >
 

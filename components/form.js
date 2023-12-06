@@ -1,6 +1,8 @@
 import * as RB from 'react-bootstrap'
 import { useState } from 'react'
+import { Cookies } from 'react-cookie'
 
+const cookies=new Cookies()
 export const EditForm=props=>{
     // const [data, setData]=useState(props.data)
     const abilities=props.abilities
@@ -252,7 +254,15 @@ export const EditForm=props=>{
         </RB.Form>
     )
 }
-
+export const DeleteForm=props=>{
+    const navbar=<h6>Place navbar in here!</h6>
+    const body=<h1>This is Body!</h1>
+    return(
+        <>{navbar}
+        {body}
+        </>
+    )
+}
 export const PokemonForm=()=>{
     // const [data, setData]=useState({
     //     rowID:props.data.id,

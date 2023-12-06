@@ -1,10 +1,11 @@
-"use client"
+// "use client"
 // import * as Auth from '../../components/authentication'
 import { useState, useEffect } from 'react'
 import { Cookies } from 'react-cookie'
 import Head from 'next/head'
 import styles from '../../styles/Home.module.css'
 import * as RB from 'react-bootstrap'
+import { NavBar3 } from '../../components/mynavbar'
 
 export default function login(){
     const cookies=new Cookies()
@@ -30,7 +31,6 @@ export default function login(){
                 my name is {cookies.get('user').username} <br /> currently i have jwt: {cookies.get('user').jwt}
                 <br />my role is {cookies.get('user').role}
             </p>)
-            window.location.assign('/list/pokemon')
         }
     },[])
     
@@ -49,7 +49,7 @@ export default function login(){
                 />
             </Head>
             <main className={styles.main}>
-                
+                <NavBar3 />
                 {
                 isCookies 
                 // cookies.get('user')
@@ -79,6 +79,7 @@ const Loginform=(props)=>{
                     e.target[0].value=null
                     e.target[1].value=null
                     window.alert(props.cookies.get('user').role)
+                    window.location.assign('/list/pokemon')
                 }
             })
             .catch(e => {
